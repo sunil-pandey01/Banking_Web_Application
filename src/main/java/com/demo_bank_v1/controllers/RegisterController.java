@@ -71,6 +71,7 @@ public class RegisterController {
 		userRepository.registerUser(first_name, last_name, email, hashed_password, token, code, verified);
 
 		// TODO: SEND EMAIL NOTIFICATION:
+//		String emailBody = html.htmlEmailTemplate(token, code);
 //        MailMessenger.htmlEmailMessenger("no-reply@somecompany.com", email, "Verify Account", emailBody);
 
 		// TODO: RETURN TO REGISTER PAGE:

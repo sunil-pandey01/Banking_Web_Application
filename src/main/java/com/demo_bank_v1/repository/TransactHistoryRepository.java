@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface TransactHistoryRepository extends CrudRepository<TransactionHistory, Integer> {
 
-    @Query(value = "SELECT * FROM v_transaction_history WHERE user_id = :user_id", nativeQuery = true)
+    @Query(value = "SELECT * FROM transaction_history WHERE user_id = :user_id", nativeQuery = true)
     List<TransactionHistory> getTransactionRecordsById(@Param("user_id")int user_id);
 }

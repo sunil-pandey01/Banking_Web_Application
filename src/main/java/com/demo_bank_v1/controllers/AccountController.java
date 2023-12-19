@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
+
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -39,7 +41,8 @@ public class AccountController {
         String bankAccountNumber = Integer.toString(setAccountNumber);
 
         // TODO: CREATE ACCOUNT:
-        accountRepository.createBankAccount(user.getUser_id(), bankAccountNumber, accountName, accountType );
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        accountRepository.createBankAccount(user.getUser_id(), bankAccountNumber, accountName, accountType, currentDateTime, 0 );
 
         // Set Success message:
         redirectAttributes.addFlashAttribute("success", "Account Created Successfully!");

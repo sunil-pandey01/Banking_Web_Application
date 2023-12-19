@@ -43,7 +43,7 @@ public class TransactController {
         }
         // TODO GET LOGGED IN USER:
         user = (User)session.getAttribute("user");
-
+        System.out.println(user);
         // TODO: GET CURRENT ACCOUNT BALANCE:
         int acc_id = Integer.parseInt(accountID);
 
@@ -57,14 +57,18 @@ public class TransactController {
 
         // TODO: UPDATE BALANCE:
         currentBalance = accountRepository.getAccountBalance(user.getUser_id(), acc_id);
-
+        if(Double.isNaN(currentBalance)){
+        	currentBalance = 0.0;
+        }
+        System.out.println("Current bal : "+currentBalance);
+        System.out.println(user.getUser_id());
         newBalance = currentBalance + depositAmountValue;
 
         // Update Account:
         accountRepository.changeAccountBalanceById(newBalance, acc_id);
 
         // Log Successful Transaction:
-        transactRepository.logTransaction(acc_id, "deposit", depositAmountValue, "online", "success", "Deposit Transaction Successful",currentDateTime);
+        transactRepository.logTransaction(acc_id, "deposit", depositAmountValue, "online", "success", "Deposit Transaction Successful",currentDateTime, user.getUser_id());
 
         redirectAttributes.addFlashAttribute("success", "Amount Deposited Successfully");
         return "redirect:/app/dashboard";
@@ -111,12 +115,14 @@ public class TransactController {
 
         // TODO: GET CURRENT BALANCE:
         double currentBalanceOfAccountTransferringFrom  = accountRepository.getAccountBalance(user.getUser_id(), transferFromId);
-
+        if(Double.isNaN(currentBalance)){
+        	currentBalance = 0.0;
+        }
         // TODO: CHECK IF TRANSFER AMOUNT IS MORE THAN CURRENT BALANCE:
         if(currentBalanceOfAccountTransferringFrom < transferAmount){
             errorMessage = "You Have insufficient Funds to perform this Transfer!";
             // Log Failed Transaction:
-            transactRepository.logTransaction(transferFromId, "Transfer", transferAmount, "online", "failed", "Insufficient Funds", currentDateTime);
+            transactRepository.logTransaction(transferFromId, "Transfer", transferAmount, "online", "failed", "Insufficient Funds", currentDateTime, user.getUser_id());
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
@@ -135,7 +141,7 @@ public class TransactController {
         accountRepository.changeAccountBalanceById(newBalanceOfAccountTransferringTo, transferToId);
 
         // Log Successful Transaction:
-        transactRepository.logTransaction(transferFromId, "Transfer", transferAmount, "online", "success", "Transfer Transaction Successful",currentDateTime);
+        transactRepository.logTransaction(transferFromId, "Transfer", transferAmount, "online", "success", "Transfer Transaction Successful",currentDateTime, user.getUser_id());
 
         String successMessage = "Amount Transferred Successfully!";
         redirectAttributes.addFlashAttribute("success", successMessage);
@@ -174,12 +180,14 @@ public class TransactController {
 
         // TODO: GET CURRENT BALANCE:
         currentBalance = accountRepository.getAccountBalance(user.getUser_id(), account_id);
-
+        if(Double.isNaN(currentBalance)){
+        	currentBalance = 0.0;
+        }
         // TODO: CHECK IF TRANSFER AMOUNT IS MORE THAN CURRENT BALANCE:
         if(currentBalance < withdrawal_amount){
             errorMessage = "You Have insufficient Funds to perform this Withdrawal!";
             // Log Failed Transaction:
-            transactRepository.logTransaction(account_id, "Withdrawal", withdrawal_amount, "online", "failed", "Insufficient Funds", currentDateTime);
+            transactRepository.logTransaction(account_id, "Withdrawal", withdrawal_amount, "online", "failed", "Insufficient Funds", currentDateTime, user.getUser_id());
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
@@ -191,7 +199,7 @@ public class TransactController {
         accountRepository.changeAccountBalanceById(newBalance, account_id);
 
         // Log Successful Transaction:
-        transactRepository.logTransaction(account_id, "Withdrawal", withdrawal_amount, "online", "success", "Withdrawal Transaction Successful",currentDateTime);
+        transactRepository.logTransaction(account_id, "Withdrawal", withdrawal_amount, "online", "success", "Withdrawal Transaction Successful",currentDateTime, user.getUser_id());
 
         successMessage = "Withdrawal Successful!";
         redirectAttributes.addFlashAttribute("success", successMessage);
@@ -234,14 +242,16 @@ public class TransactController {
 
         // TODO: GET CURRENT BALANCE:
         currentBalance = accountRepository.getAccountBalance(user.getUser_id(), accountID);
-
+        if(Double.isNaN(currentBalance)){
+        	currentBalance = 0.0;
+        }
         // TODO: CHECK IF PAYMENT AMOUNT IS MORE THAN CURRENT BALANCE:
         if(currentBalance < paymentAmount){
             errorMessage = "You Have insufficient Funds to perform this payment";
             String reasonCode = "Could not Processed Payment due to insufficient funds!";
             paymentRepository.makePayment(accountID, beneficiary, account_number, paymentAmount, reference, "failed", reasonCode, currentDateTime);
             // Log Failed Transaction:
-            transactRepository.logTransaction(accountID, "Payment", paymentAmount, "online", "failed", "Insufficient Funds", currentDateTime);
+            transactRepository.logTransaction(accountID, "Payment", paymentAmount, "online", "failed", "Insufficient Funds", currentDateTime, user.getUser_id());
             redirectAttributes.addFlashAttribute("error", errorMessage);
             return "redirect:/app/dashboard";
         }
@@ -257,7 +267,7 @@ public class TransactController {
         accountRepository.changeAccountBalanceById(newBalance, accountID);
 
         // Log Successful Transaction:
-        transactRepository.logTransaction(accountID, "Payment", paymentAmount, "online", "success", "Payment Transaction Successful",currentDateTime);
+        transactRepository.logTransaction(accountID, "Payment", paymentAmount, "online", "success", "Payment Transaction Successful",currentDateTime, user.getUser_id());
 
         successMessage = reasonCode;
         redirectAttributes.addFlashAttribute("success", successMessage);

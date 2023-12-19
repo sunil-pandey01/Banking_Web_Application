@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "v_transaction_history")
+//@Table(name = "v_transaction_history")
 public class TransactionHistory {
 
     @Id
